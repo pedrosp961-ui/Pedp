@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Monthsary ❤️</title>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- 1. CSS RESET & GLOBAL VARIABLES --- */
+        :root {
+            --primary: #ff1a1a; /* Merah Hati */
+            --dark: #0f0f0f;    /* Hitam Pekat */
+            --glass: rgba(255, 255, 255, 0.1);
+            --text: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none; /* Biar teks gak ke-blok saat main game */
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            overflow: hidden; /* Supaya tidak ada scrollbar browser */
+            height: 100vh;
+            width: 100vw;
+            transition: background 1s ease;
+        }
+
+        /* --- 2. BACKGROUND ANIMATIONS (FALLING HEARTS) --- */
+        .heart-bg {
+            position: fixed;
+            top: -10vh;
+            color: var(--primary);
+            font-size: 20px;
+            animation: fall linear forwards;
+            z-index: 0;
+            opacity: 0.7;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(360deg); }
+        }
+
+        /* --- 3. CONTAINER UTAMA --- */
+        #app {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* --- 4. SLIDER SYSTEM --- */
+        .slide {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: all 0.8s ease-in-out;
+            transform: scale(0.9);
+            padding: 20px;
+            text-align: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+            pointer-events: all;
+            transform: scale(1);
+        }
+
+        /* --- 5. STYLING ELEMEN --- */
+        h1, h2 {
+            font-family: 'Dancing Script', cursive;
+            color: var(--primary);
+            text-shadow: 0 0 10px rgba(255, 26, 26, 0.7);
+            margin-bottom: 20px;
+        }
+        
+        h1 { font-size: 3.5rem; }
+        h2 { font-size: 2rem; }
+        p { font-size: 1.1rem; line-height: 1.6; max-width: 600px; margin-bottom: 20px;}
+
+        .glass-box {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            padding: 2rem;
+            border-radius: 20px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 90%;
+            width: 500px;
+        }
+
+        /* Tombol */
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin: 10px;
+            font-family: 'Poppins', sans-serif;
+            font-weight: bold;
+        }
+
+        .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px var(--primary);
+        }
+
+        .btn-sec {
+            background: transparent;
+            border: 2px solid white;
+        }
+
+        /* Navigasi Slide */
+        .nav-btn {
+            position: absolute;
+            bottom: 30px;
+            background: rgba(255,255,255,0.2);
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            z-index: 100;
+        }
+        .nav-next { right: 30px; }
+        .nav-prev { left: 30px; }
+
+        /* --- 6. GAME ASSETS --- */
+        .game-target {
+            font-size: 3rem;
+            position: absolute;
+            cursor: pointer;
+            animation: float 2s infinite ease-in-out;
+        }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-20px)} }
+
+        /* --- 7. MUSIC PLAYER --- */
+        .music-control {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            background: rgba(0,0,0,0.5);
+            padding: 10px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .music-anim div {
+            width: 5px; height: 20px; background: var(--primary);
+            animation: sound 1s infinite;
+        }
+        @keyframes sound { 0%,100%{height: 10px} 50%{height: 30px} }
+
+        /* --- 8. GALLERY & IMAGES --- */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .photo-grid img {
+            width: 100%;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid white;
+        }
+        
+        .couple-anim {
+            font-size: 5rem;
+            animation: beat 1s infinite;
+        }
+        @keyframes beat { 0%,100%{transform:scale(1)} 50%{transform:scale(1.2)} }
+
+        /* Trap Button */
+        #btnNo { position: relative; transition: 0.1s; }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; }
+            .glass-box { width: 90%; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="music-control">
+        <div class="music-anim" id="musicVisual" style="display:none; gap:3px; display:flex;">
+            <div></div><div></div><div></div>
+        </div>
+        <button class="btn" style="padding: 5px 15px; font-size: 12px;" onclick="toggleMusic()">🎵 Play/Pause</button>
+    </div>
+
+    <audio id="song1" loop>
+        <source src="lagujustin.webm" type="audio/webm">
+    </audio>
+    <audio id="Song2" loop>
+        <source src="Song2.mp3" type="audio/mp3">
+    </audio>
+    <audio id="sfxPop">
+        <source src="pop.mp3" type="audio/mp3">
+    </audio>
+    <audio id="sfxSuccess">
+        <source src="yeywin.mp3" type="audio/mp3">
+    </audio>
+    
+
+    <div id="app">
+        
+        <div class="slide active" id="slide1">
+            <div class="glass-box">
+                <h1>Hai sayangku!</h1>
+                <p>Sebelum masuk ke dalam, aku punya tantangan kecil buat kamu.</p>
+                <p>Klik tombol di bawah ini ya!</p>
+                <button class="btn" onclick="nextSlide()">Mulai ❤️</button>
+            </div>
+        </div>
+
+        <div class="slide" id="slide2">
+            <div class="glass-box">
+                <h2>The song spesial for you ❤️</h2>
+                <p>Biar bacanya lebih enak, pilih lagunya dulu sayang:</p>
+
+                <button class="btn" onclick="selectMusic(1)">Enjoy 1 🎹</button>
+                <button class="btn" onclick="selectMusic(2)">Enjoy 2 🎸</button>
+                
+            </div>
+        </div>
+
+        <div class="slide" id="slide3">
+            <h2>Tangkap 5 Hati!</h2>
+            <p>ayoo coba klik hatinya buat buka kuncinyaa.</p>
+            <h3 id="scoreBoard">Skor: 0/5</h3>
+            <div id="gameArea" style="width:100%; height:300px; position:relative;">
+                </div>
+        </div>
+
+        <div class="slide" id="slide4">
+            <div class="glass-box">
+                <p>Yeay! Kamu berhasil Bub ❤️ Pacarku jago banget sih?</p>
+                <h1>Happy Mensiversarry Sayangku
+                <h2 id="namesDisplay">Pedros Calixto & Bumi Aptodarmo</h2>
+                <p>Selamat hari jadi bulan ke-<span id="monthCountTitle">X</span></p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide5">
+            <div class="glass-box">
+                <h2>Sebentar sebentar, aku punya pertanyaan buat kamu</h2>
+                <p>Kamu sayang banget ngga sama aku?</p>
+                <p>jangan coba coba jawab ngga ya.. kamu gabakal bisa !!</p>
+                <br>
+                <button class="btn" onclick="alert('cie gabisa click engga, Aku juga sayaang banget sama kamu! 🥰'); nextSlide();">Iya Sayang Banget!</button>
+                <button class="btn btn-sec" id="btnNo" onmouseover="moveButton()">Engga</button>
+            </div>
+        </div>
+
+        <div class="slide" id="slide6">
+            <div class="glass-box">
+                <h2>Timer buat kita bisa kamu liat kedepannya nanti:</h2>
+                <div id="timer" style="font-size: 1.5rem; font-weight: bold; margin: 20px 0; color: var(--primary);">Loading...</div>
+                <p>Dan aku harap masih terus berlanjut...</p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide7">
+            <div class="couple-anim">𖨆♡⃛𖨆</div>
+            <h2>Pasangan termenul menul kalo kata Bumi</h2>
+            <p>Ini ilustrasi kita kalau lagi bareng, nempel terus kayak perangko hehe.</p>
+        </div>
+
+        <div class="slide" id="slide8">
+            <div class="glass-box">
+                <h2>Momen Kita 📸</h2>
+                <div class="photo-grid">
+                    <img src="foto1.jpeg" alt="Foto 1"> <img src="foto2.jpeg" alt="Foto 2"> <img src="foto3.png" alt="Foto 3"> <img src="foto4.png" alt="Foto 4"> </div>
+                <p>the day first we meet, ada kesalahpahaman tapi jadi moment yg paling aku inget always ⁠♡</p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide9">
+            <div class="glass-box">
+                <h1 style="font-size:2rem">"Kamu tau ga kalau kamu itu spesial ? Notifikasi kamu yang selalu aku tunggu. dan kabar kamu yang selalu aku cari tau walaupun kamu suka tidur hehe."</h1>
+            </div>
+        </div>
+
+        <div class="slide" id="slide10">
+            <div class="glass-box">
+                <h2>Bukan editan aku sih, tapi suka ga ? hehe nanti kita pake yaaa</h2>
+                <div class="photo-grid">
+                    <img src="pedros.jpg" alt="Foto 5">
+                    <img src="bumi.jpg" alt="Foto 6">
+                </div>
+            </div>
+        </div>
+
+        <div class="slide" id="slide11">
+            <div class="glass-box">
+                <h2>Kamu bosen sama backgroundnya ga bub?</h2>
+                <p>Coba ganti deh backgroundnya:</p>
+                <button class="btn" onclick="changeBg('image', 'foto_bg1.png')">Moment 1 🌹</button>
+                <button class="btn" onclick="changeBg('image', 'foto_bg2.jpeg')">Moment 2 ✨</button>
+                <button class="btn" onclick="changeBg('image', 'foto_bg3.jpeg')">Moment 3 🌙</button>
+                <br>
+                <button class="btn btn-sec" onclick="changeBg('color', '#0f0f0f')">Balik ke Dark Mode</button>
+            </div>
+        </div>
+
+        <div class="slide" id="slide12">
+            <div class="glass-box">
+                <p>Setiap detik sama kamu itu berharga banget buat aku. Terima kasih udah jadi alasan aku senyum setiap hari. Kayanya aku dipelet kamu ya?!😊</p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide13">
+            <div class="glass-box" style="height: 400px; overflow-y: scroll;">
+                <h2>Surat buat kamu 💌</h2>
+                <p style="text-align: justify; padding: 10px;">
+                    Hai sayang, <br><br>
+                    Aku cuma mau bilang. terimakasih sudah menjadi rumah terbaik, maaf kalau kadang aku nyebelin, kadang bikin kamu marah. Tapi satu hal yang pasti, sayangku ke kamu ngga pernah berkurang.<br><br>
+                    Terima kasih udah sabar ngadepin aku. Terima kasih udah selalu ada. Aku harap kita bisa ngelewatin banyak bulan dan tahun lagi bareng-bareng. I'm always remember the first time i saw you. <br><br>
+                    I am so happy to spend days with you. you are so cute and delicate that you make me love you. Last but not least. HAPPY 2nd MENSIVERSARRY BUB ♡<br><br>
+                    I Love You More Than Words Can Say. My love for you is like Universe hmm, Always expanding and never ending And I love being yours and will always being like that. I Love you more and more.<br><br>
+                    I hope u like it bub 
+                </p>
+            </div>
+        </div>
+
+        <div class="slide" id="slide14">
+             <div class="couple-anim">❤️</div>
+            <h2>Harapanku</h2>
+            <p>Semoga kita makin dewasa, makin pengertian, dan makin langgeng yaa.</p>
+            <p>Jaga kesehatan ya sayang!</p>
+        </div>
+
+        <div class="slide" id="slide15">
+            <div class="glass-box">
+                <h1>I Love You!</h1>
+                <h2>Always</h2>
+                <p>Klik tombol di bawah buat kirim pesan ke Mess aku kalau kamu udah liat ini. kasih pesan pesan buat akuu yaa</p>
+                <a href="https://m.me/PedrosCalixto?text=Aku%20udah%20liat%20webnya%20bagus%20banget%20makasih" class="btn" target="_blank">Kirim Pesan Mess 💬</a>
+                <br><br>
+                <button class="btn btn-sec" onclick="location.reload()">Ulangi Web ↺</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-btn nav-prev" onclick="prevSlide()">❮ Back</div>
+    <div class="nav-btn nav-next" onclick="nextSlide()">Next ❯</div>
+
+    <script>
+        // --- 1. KONFIGURASI TANGGAL & NAMA (UBAH DISINI) ---
+        const startDate = new Date("2025-12-13T00:00:00"); // Format: TAHUN-BULAN-TANGGAL
+        const coupleNames = "Pedros Calixto & Bumi Aptodarmo";
+        const monthCount = 2; // Bulan ke berapa
+
+        // Setup Awal
+        document.getElementById('namesDisplay').innerText = coupleNames;
+        document.getElementById('monthCountTitle').innerText = monthCount;
+
+        // --- 2. LOGIKA SLIDER ---
+        let currentSlide = 1;
+        const totalSlides = 15;
+
+        function showSlide(n) {
+            // Hapus kelas active dari semua slide
+            document.querySelectorAll('.slide').forEach(s => s.classList.remove('active'));
+            
+            // Logika Circular (Opsional, disini saya buat stop di akhir)
+            if (n > totalSlides) currentSlide = totalSlides;
+            if (n < 1) currentSlide = 1;
+
+            // Tambah kelas active ke slide tujuan
+            document.getElementById('slide' + currentSlide).classList.add('active');
+
+            // Khusus Slide Game (Slide 3)
+            if (currentSlide === 3) startGame();
+        }
+
+        function nextSlide() {
+            currentSlide++;
+            showSlide(currentSlide);
+        }
+
+        function prevSlide() {
+            currentSlide--;
+            showSlide(currentSlide);
+        }
+
+        // --- 3. LOGIKA MUSIK ---
+        let currentAudio = null;
+        let isPlaying = false;
+
+        function selectMusic(choice) {
+            if(currentAudio) {
+                currentAudio.pause();
+                currentAudio.currentTime = 0;
+            }
+
+            currentAudio = document.getElementById('song' + choice);
+            currentAudio.play().then(() => {
+                isPlaying = true;
+                document.getElementById('musicVisual').style.display = 'flex';
+                nextSlide();
+            }).catch(e => alert);
+        }
+
+        function toggleMusic() {
+            if(!currentAudio) currentAudio = document.getElementById('song1'); // Default
+            
+            if (isPlaying) {
+                currentAudio.pause();
+                document.getElementById('musicVisual').style.display = 'none';
+            } else {
+                currentAudio.play();
+                document.getElementById('musicVisual').style.display = 'flex';
+            }
+            isPlaying = !isPlaying;
+        }
+
+        // --- 4. GAME SEDERHANA (TANGKAP HATI) ---
+        let score = 0;
+        function startGame() {
+            const gameArea = document.getElementById('gameArea');
+            gameArea.innerHTML = ''; // Reset
+            score = 0;
+            document.getElementById('scoreBoard').innerText = "Skor: 0/5";
+            spawnTarget();
+        }
+
+        function spawnTarget() {
+            if (score >= 5) {
+                document.getElementById('sfxSuccess').play();
+
+                document.getElementById('gameArea').innerHTML = "<h2 style='color:#fff'>Unlocked! ❤️</h2>";
+                setTimeout(nextSlide, 1500);
+                return;
+            }
+
+            const gameArea = document.getElementById('gameArea');
+            const heart = document.createElement('div');
+            heart.innerHTML = '❤️';
+            heart.className = 'game-target';
+            
+            // Posisi Random
+            const x = Math.random() * (gameArea.offsetWidth - 50);
+            const y = Math.random() * (gameArea.offsetHeight - 50);
+            
+            heart.style.left = x + 'px';
+            heart.style.top = y + 'px';
+
+            heart.onclick = function() {
+                score++;
+                const popSound = document.getElementById('sfxPop');
+                popSound.currentTime = 0;
+                popSound.volume = 1.0;
+                popSound.play();
+
+                document.getElementById('scoreBoard').innerText = "Skor: " + score + "/5";
+                heart.remove();
+                spawnTarget();
+            };
+
+            gameArea.appendChild(heart);
+        }
+
+        // --- 5. FITUR TRAP BUTTON (Pindah saat di-hover) ---
+        function moveButton() {
+            const btn = document.getElementById('btnNo');
+            const x = Math.random() * (window.innerWidth - 100);
+            const y = Math.random() * (window.innerHeight - 100);
+            btn.style.position = 'fixed';
+            btn.style.left = x + 'px';
+            btn.style.top = y + 'px';
+        }
+
+        // --- 6. BACKGROUND CHANGER ---
+        function changeBg(type, value) {
+            const body = document.body;
+
+            if (type === 'image') {
+                body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('${value}')`;
+                body.style.backgroundSize = 'cover';
+                body.style.backgroundPosition = 'center';
+                setTimeout(() => {
+                    alert("Suka gaa sama backgroundnya ? ✨");
+                }, 700); // Jeda 100ms agar mata sempat melihat gambarnya dulu
+            } else {
+                body.style.backgroundImage = 'none';
+                body.style.backgroundColor = value;
+            }
+        }
+
+        // --- 7. COUNTUP TIMER ---
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            document.getElementById('timer').innerText = 
+                `${days} Hari, ${hours} Jam, ${minutes} Menit, ${seconds} Detik`;
+        }
+        setInterval(updateTimer, 1000);
+
+        // --- 8. ANIMASI JATUH HATI (BACKGROUND) ---
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart-bg');
+            heart.innerText = Math.random() > 0.5 ? '❤️' : '🤍'; // Random merah atau putih
+            heart.style.left = Math.random() * 100 + "vw";
+            heart.style.animationDuration = Math.random() * 3 + 2 + "s";
+            
+            document.body.appendChild(heart);
+            
+            setTimeout(() => {
+                heart.remove();
+            }, 5000);
+        }
+        setInterval(createHeart, 300); // Muncul setiap 300ms
+
+    </script>
+</body>
+</html>
